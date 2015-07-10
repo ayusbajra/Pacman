@@ -1,0 +1,77 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	background-color: black;
+}
+
+.wrapper {
+	margin: 0px;
+	padding: 0px;
+	background-color: black;
+}
+
+#main-screen {
+	margin: 50px auto;
+	width: 750px;
+	height: 450px;
+	position: relative;
+	background-color: black;
+}
+
+.logo {
+	margin:0 auto;
+	width: 500px;
+	height: 200px;
+	background: url("../images/logo1.png") no-repeat;
+	background-position: 0px 20px;
+}
+
+.play {
+	width: 750px;
+	height: 100px;
+	color: #345da9;
+	position: absolute;
+	top: 350px;
+	border-radius: 10px;
+}
+
+.play h1 {
+	text-align: center;
+	line-height: 30px;
+	font-family: arial;
+	font-size: 25px;
+}
+
+#container {
+	margin: 50px auto;
+	width: 750px;
+	height: 450px;
+	position: relative;
+	background-image: url('../images/main.png');
+	display: none;
+}
+
+.guy {
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	background-color: yellow;
+}
+
+.pokemon {
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	background-color: red;
+}
+
+.object {
+	position: absolute;
+	width:30px;
+	height:30px;
+	background-repeat: no-repeat;
+	background-image: url('../images/object.png');
+}
