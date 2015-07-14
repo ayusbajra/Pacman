@@ -1,9 +1,9 @@
 ;(function(){
 	'use strict';
 
-	/******************************* Object Class ******************************/
+	/******************************* Obstacle Class ******************************/
 
-	function Object() {
+	function Obstacle() {
 		var that = this;
 		this.element = document.createElement('div');
 
@@ -11,7 +11,7 @@
 		this.y = 0;
 
 		this.init = function(code, mapX, mapY) {
-			//that.element.className = 'object';
+			//that.element.className = 'obstacle';
 			//that.element.style.backgroundPosition = '-90px 0px';
 			that.x = mapX * 30;
 			that.y = mapY * 30;
@@ -29,12 +29,14 @@
 
 		this.x = 0;
 		this.y = 0;
-		this.velocityX = 0;
-		this.velocityY = 0;
+		this.velocity = 5;
+		this.pathCounter = 0;
+
+		this.route;
 
 		var initialPosition = function(){
 			var rand = Math.floor(Math.random()*4+1);
-			console.log(rand);
+			//console.log(rand);
 			if(rand === 1) {
 				that.x = 30;
 				that.y = 30;
@@ -57,15 +59,63 @@
 			that.element.style.top = that.y + 'px';
 		};
 
-		this.updatePosition = function() {
-			that.x += that.velocityX;
-			that.y += that.velocityY;
-			//console.log(that.x, that.y);
-			that.element.style.left = that.x + 'px';
-			that.element.style.top = that.y + 'px';
+		this.checkPosition = function(currentX, currentY, path) {
+			var coordinate = [];
+			coordinate = path[1];
+			var newX = coordinate[0] * 30;
+			var newY = coordinate[1] * 30;
+
+			if(newX === currentX && newY === currentY) {
+				console.log('equal');
+				return false;
+			}else {
+				console.log('not equal');
+				return true;
+			}
 		};
 
-		/*this.chaseAsh = function(gxPos,gyPos,pxPos,pyPos) {
+		this.updatePosition = function(path) {
+			var coordinate = [];
+			coordinate = path[that.pathCounter];
+			//debugger;
+			
+			if (that.pathCounter < path.length) {
+				var newPositionX = coordinate[0]*30;
+				var newPositionY = coordinate[1]*30;
+				console.log(newPositionX, newPositionY);
+
+				if(that.pathCounter > 0) {
+					var oldPosition = path[that.pathCounter - 1];
+					var oldPositionX = oldPosition[0] * 30;
+					var oldPositionY = oldPosition[1] * 30;
+					//if x does not change, change y
+					if(newPositionX === oldPositionX) {
+						if(newPositionY > oldPositionY) {
+							that.y += that.velocity;
+						}else if(newPositionY < oldPositionY) {
+							that.y -= that.velocity;
+						}
+					}
+					//if y does not change, change x
+					if(newPositionY === oldPositionY) {
+						if(newPositionX > oldPositionX) {
+							that.x += that.velocity;
+						}else if(newPositionX < oldPositionX) {
+							that.x -= that.velocity;
+						}
+					}
+				}else {
+					that.pathCounter++;
+				}
+			}
+
+			that.element.style.left = that.x + 'px';
+			that.element.style.top = that.y + 'px';
+
+			
+		};
+
+/*		this.chaseAsh = function(gxPos,gyPos,pxPos,pyPos) {
 			
 			console.log('Ash='+gxPos/30+' '+gyPos/30);
 			console.log('Pokemon='+Math.floor(pxPos/30)+' '+Math.floor(pyPos/30));
@@ -96,8 +146,8 @@
 		this.element.style.background = 'url(images/ash-down.png)';
 		this.element.style.backgroundPosition = '0px 0px';
 
-		this.x = 360; /*360*/
-		this.y = 210; /*210*/
+		this.x = 30; /*360*/
+		this.y = 270; /*210*/
 		this.velocityX = 0;
 		this.velocityY = 0;
 
@@ -118,14 +168,6 @@
 				that.velocityX = 0;
 				that.x = 30;
 			}
-			/*if(that.y < 0){
-				that.velocityY = 0;
-				that.y = 0;
-			}
-			if(that.y > 420){
-				that.velocityY = 0;
-				that.y = 420;
-			}*/
 			that.x += that.velocityX;
 			that.y += that.velocityY;
 			that.element.style.left = that.x + 'px';
@@ -201,7 +243,7 @@
 		var that = this;
 		this.element = document.getElementById('container');
 
-		this.objectArray = [];
+		this.obstacleArray = [];
 
 		var levelMap = [
 			[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -224,6 +266,10 @@
 		var grid = new Grid(levelMap);
 
 		var finder = new BreadthFirstFinder();
+		var path;
+
+
+		var counter=0;
 
 		this.init = function() {
 			generateMap(levelMap);
@@ -240,22 +286,43 @@
 		};
 
 		var gameLoop = function() {
+			//debugger;
 			var guyX = that.guy.x;
 			var guyY = that.guy.y;
 			var pokemonX = that.pokemon.x;
 			var pokemonY = that.pokemon.y;
+			var guyCoordX = guyX/30;
+			var guyCoordY = guyY/30;
+			var pokemonCoordX = Math.floor(pokemonX/30);
+			var pokemonCoordY = Math.floor(pokemonY/30);
+			that.guy.updatePosition();
 
 			var gridBackup = grid.clone();
-			var path = finder.findPath(Math.floor(pokemonX/30), Math.floor(pokemonY/30), guyX/30, guyY/30, gridBackup);
-			console.log(path);
-			that.guy.updatePosition();
-			/*call the chasing function*/
-			//that.pokemon.chaseAsh(guyX, guyY, pokemonX, pokemonY);
-			/*update the pokemon position*/
-			//that.pokemon.updatePosition();
+			if(counter===0){
+				path = finder.findPath(pokemonCoordX, pokemonCoordY, guyCoordX, guyCoordY, gridBackup);
+				//console.log(path);
+				counter=1;
+			}
+			
+			//if pokemon has not reached new coordinate, continue moving it 5 pixels...
+			//else if pokemon reached new coordinate, first check the path array, and move it.
 
-			for(var i = 0; i < that.objectArray.length; i++) {
-				if(collisionDetection(that.guy, that.objectArray[i])) {
+			if(that.pokemon.checkPosition(pokemonX, pokemonY, path)) { // if not equal
+				that.pokemon.updatePosition(path);
+				console.log(path);
+			}else{
+				path = finder.findPath(pokemonCoordX, pokemonCoordY, guyCoordX, guyCoordY, gridBackup);
+			}
+
+			
+			
+
+			//call the chasing function
+			//that.pokemon.chaseAsh(guyX, guyY, pokemonX, pokemonY);
+			//update the pokemon position
+
+			for(var i = 0; i < that.obstacleArray.length; i++) {
+				if(collisionDetection(that.guy, that.obstacleArray[i])) {
 					
 					that.guy.x = guyX;
 					that.guy.y = guyY;
@@ -263,12 +330,21 @@
 					that.guy.velocityY = 0;
 					that.guy.updatePosition();
 				}
+				/*if(collisionDetection(that.pokemon, that.obstacleArray[i])) {
+					
+					that.pokemon.x = pokemonX;
+					that.pokemon.y = pokemonY;
+					that.pokemon.updatePosition(path);
+				}*/
 			}
-
-			if(guyX === pokemonX && guyY === pokemonY) {
+			/*if(guyX === pokemonX && guyY === pokemonY) {
 				console.log("You Lose.");
 				clearInterval(that.interval);
 			}
+			console.log(path.length);*/
+
+			/*if(that.pokemon.pathCounter >= path.length)
+				clearInterval(that.interval);*/
 
 		};
 
@@ -286,11 +362,11 @@
 				//x-axis values
 				for (var j = 0; j < map[i].length; j++) {
 					if(map[i][j] != 0) {;
-						var object = new Object();
+						var obstacle = new Obstacle();
 						// implementing in an opposite way
-						object.init(map[i][j],j,i);
-						that.objectArray.push(object);
-						that.element.appendChild(object.element);
+						obstacle.init(map[i][j],j,i);
+						that.obstacleArray.push(obstacle);
+						that.element.appendChild(obstacle.element);
 					}
 				}
 			}
