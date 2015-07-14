@@ -68,10 +68,8 @@ body {
 	background-color: red;
 }
 
-.object {
+.pokeball {
+	width: 30px;
+	height: 30px;
 	position: absolute;
-	width:30px;
-	height:30px;
-	background-repeat: no-repeat;
-	background-image: url('../images/object.png');
 }

@@ -20,6 +20,28 @@
 		};
 	};
 
+	/******************************* Pokeball Class *******************************/
+
+	function Pokeball() {
+		var that = this;
+		this.element = document.createElement('div');
+		this.element.style.width = 30 + 'px';
+		this.element.style.height = 30 + 'px';
+		this.element.style.background = 'url(images/pokeball.png)';
+
+		this.x;
+		this.y;
+
+		this.init = function(x,y) {
+			that.element.className = 'pokeball';
+			that.x = x;
+			that.y = y;
+			that.element.style.left = that.x + 'px';
+			that.element.style.top = that.y + 'px';
+		};
+	};
+
+
 
 	/***************************** Pokemon Class ***************************/
 
@@ -51,6 +73,7 @@
 				that.y = 390;
 			}
 		};
+
 		initialPosition();
 
 		this.init = function() {
@@ -124,8 +147,9 @@
 		this.element.style.background = 'url(images/ash-down.png)';
 		this.element.style.backgroundPosition = '0px 0px';
 
-		this.x = 30; /*360*/
-		this.y = 270; /*210*/
+		// center middle position
+		this.x = 360;
+		this.y = 210;
 		this.velocityX = 0;
 		this.velocityY = 0;
 
@@ -219,9 +243,8 @@
 
 	function Game() {
 		var that = this;
-		this.element = document.getElementById('container');
 
-		this.obstacleArray = [];
+		this.element = document.getElementById('container');
 
 		var levelMap = [
 			[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -242,15 +265,17 @@
 		];
 
 		var grid = new Grid(levelMap);
-
 		var finder = new BreadthFirstFinder();
 		var path;
+		var counter = 0;
 
-
-		var counter=0;
+		this.obstacleArray = [];
+		this.guy;
+		this.pokemon = [];
+		this.pokeball;
 
 		this.init = function() {
-			generateMap(levelMap);
+			createMap(levelMap);
 
 			that.guy = new Guy();
 			that.guy.init();
@@ -260,7 +285,11 @@
 			that.pokemon.init();
 			that.element.appendChild(that.pokemon.element);
 
-			this.interval = setInterval(gameLoop, 100);
+			that.pokeball = new Pokeball();
+			that.pokeball.init(30, 30);
+			that.element.appendChild(that.pokeball.element);
+
+			this.interval = setInterval(gameLoop, 65);
 		};
 
 		var gameLoop = function() {
@@ -289,14 +318,13 @@
 			if(that.pokemon.checkPosition(pokemonX, pokemonY, path)) { // if not equal
 				that.pokemon.updatePosition(path);
 				console.log(path);
-			}else{
+			}else {
 				path = finder.findPath(pokemonCoordX, pokemonCoordY, guyCoordX, guyCoordY, gridBackup);
 			}
 
-			//checking collision detection
+			//checking collision detection between guy and obstacles
 			for(var i = 0; i < that.obstacleArray.length; i++) {
 				if(collisionDetection(that.guy, that.obstacleArray[i])) {
-					
 					that.guy.x = guyX;
 					that.guy.y = guyY;
 					that.guy.velocityX = 0;
@@ -304,8 +332,10 @@
 					that.guy.updatePosition();
 				}
 			}
-			if(guyX === pokemonX && guyY === pokemonY) {
-				console.log("You Lose.");
+
+			//checking collision detection between guy and pokemon
+			if(collisionDetection(that.guy, that.pokemon)) {
+				console.log("dead");
 				clearInterval(that.interval);
 			}
 		};
@@ -318,7 +348,7 @@
 			}
 		};
 
-		var generateMap = function(map) {
+		var createMap = function(map) {
 			//y-axis values
 			for (var i = 0; i < map.length; i++) {
 				//x-axis values
