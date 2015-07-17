@@ -3,14 +3,13 @@
 	padding: 0px;
 }
 
-body {
+/*body {
 	background-color: black;
-}
+}*/
 
 .wrapper {
 	margin: 0px;
 	padding: 0px;
-	background-color: black;
 }
 
 #main-screen {
@@ -65,7 +64,6 @@ body {
 	width: 30px;
 	height: 30px;
 	position: absolute;
-	background-color: red;
 }
 
 .pokeball {

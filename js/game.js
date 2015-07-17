@@ -10,9 +10,7 @@
 		this.x = 0;
 		this.y = 0;
 
-		this.init = function(code, mapX, mapY) {
-			//that.element.className = 'obstacle';
-			//that.element.style.backgroundPosition = '-90px 0px';
+		this.init = function(mapX, mapY) {
 			that.x = mapX * 30;
 			that.y = mapY * 30;
 			that.element.style.left = that.x + 'px';
@@ -29,8 +27,8 @@
 		this.element.style.height = 30 + 'px';
 		this.element.style.background = 'url(images/pokeball.png)';
 
-		this.x;
-		this.y;
+		this.x = 0;
+		this.y = 0;
 
 		this.init = function(x,y) {
 			that.element.className = 'pokeball';
@@ -38,6 +36,10 @@
 			that.y = y;
 			that.element.style.left = that.x + 'px';
 			that.element.style.top = that.y + 'px';
+		};
+
+		this.removePokeball = function() {
+			that.element.remove();
 		};
 	};
 
@@ -48,33 +50,41 @@
 	function Pokemon() {
 		var that = this;
 		this.element = document.createElement('div');
+		//this.element.style.background = 'url(images/zapdos.png)';
+		this.element.style.backgroundPosition = '0px 0px';
 
 		this.x = 0;
 		this.y = 0;
-		this.velocity = 5;
+		var currentSpriteNox = 0;
 		this.pathCounter = 0;
+		this.a = false;
+		this.b = false;
+		this.c = false;
+		this.d = false;
 
-		this.route;
-
-		var initialPosition = function(){
+		this.initialPosition = function(){
 			var rand = Math.floor(Math.random()*4+1);
 			//console.log(rand);
 			if(rand === 1) {
 				that.x = 30;
 				that.y = 30;
-			}else if(rand === 2) {
+				that.a = true;
+			} else if(rand === 2) {
 				that.x = 690;
 				that.y = 30;
-			}else if(rand === 3) {
+				that.b = true;
+			} else if(rand === 3) {
 				that.x = 690;
 				that.y = 390;
-			}else {
+				that.c = true;
+			} else {
 				that.x = 30;
 				that.y = 390;
+				that.d = true;
 			}
 		};
 
-		initialPosition();
+		that.initialPosition();
 
 		this.init = function() {
 			that.element.className = 'pokemon';
@@ -89,15 +99,14 @@
 			var newY = coordinate[1] * 30;
 
 			if(newX === currentX && newY === currentY) {
-				console.log('equal');
 				return false;
 			}else {
-				console.log('not equal');
 				return true;
 			}
 		};
 
-		this.updatePosition = function(path) {
+		this.updatePosition = function(path,velocity) {
+			
 			var coordinate = [];
 			coordinate = path[that.pathCounter];
 			//debugger;
@@ -111,31 +120,71 @@
 					var oldPosition = path[that.pathCounter - 1];
 					var oldPositionX = oldPosition[0] * 30;
 					var oldPositionY = oldPosition[1] * 30;
+					
 					//if x does not change, change y
 					if(newPositionX === oldPositionX) {
 						if(newPositionY > oldPositionY) {
-							that.y += that.velocity;
+							//moving down
+							that.y = that.y + velocity;
+							that.element.style.background = 'url(images/zapdos-down.png)';
+							var currentX = 30 * currentSpriteNox;
+							that.element.style.backgroundPositionX = currentX + 'px';
+							if(currentSpriteNox == 4) {
+								currentSpriteNox = 0;
+							} else {
+								currentSpriteNox = currentSpriteNox + 1;
+							}
 						}else if(newPositionY < oldPositionY) {
-							that.y -= that.velocity;
+							//moving up
+							that.y = that.y - velocity;
+							that.element.style.background = 'url(images/zapdos-up.png)';
+							var currentX = 30 * currentSpriteNox;
+							that.element.style.backgroundPositionX = currentX + 'px';
+							if(currentSpriteNox == 4) {
+								currentSpriteNox = 0;
+							} else {
+								currentSpriteNox = currentSpriteNox + 1;
+							}
 						}
 					}
+					
 					//if y does not change, change x
 					if(newPositionY === oldPositionY) {
 						if(newPositionX > oldPositionX) {
-							that.x += that.velocity;
+							//moving right
+							that.x = that.x + velocity;
+							that.element.style.background = 'url(images/zapdos-right.png)';
+							var currentX = 30 * currentSpriteNox;
+							that.element.style.backgroundPositionX = currentX + 'px';
+							if(currentSpriteNox == 4) {
+								currentSpriteNox = 0;
+							} else {
+								currentSpriteNox = currentSpriteNox + 1;
+							}
 						}else if(newPositionX < oldPositionX) {
-							that.x -= that.velocity;
+							//moving left
+							that.x = that.x - velocity;
+							that.element.style.background = 'url(images/zapdos-left.png)';
+							var currentX = 30 * currentSpriteNox;
+							that.element.style.backgroundPositionX = currentX + 'px';
+							if(currentSpriteNox == 4) {
+								currentSpriteNox = 0;
+							} else {
+								currentSpriteNox = currentSpriteNox + 1;
+							}
 						}
 					}
 				}else {
-					that.pathCounter++;
+					that.pathCounter = that.pathCounter + 1;
 				}
 			}
 
 			that.element.style.left = that.x + 'px';
 			that.element.style.top = that.y + 'px';
+		};
 
-			
+		this.removePokemon = function() {
+			that.element.remove();
 		};
 	};
 
@@ -152,6 +201,7 @@
 		this.y = 210;
 		this.velocityX = 0;
 		this.velocityY = 0;
+		var currentSpriteNox = 0;
 
 		this.init = function() {
 			that.element.className = 'guy';
@@ -170,69 +220,82 @@
 				that.velocityX = 0;
 				that.x = 30;
 			}
-			that.x += that.velocityX;
-			that.y += that.velocityY;
+			that.x = that.x + that.velocityX;
+			that.y = that.y + that.velocityY;
 			that.element.style.left = that.x + 'px';
 			that.element.style.top = that.y + 'px';
 		};
 
-		this.animate = function(value) {
-			if(value===1){
+		var animate = function(value) {
+			if(value ===1){
 				//console.log('left side');
 				that.element.style.background = 'url(images/ash-left.png)';
-			}
-			if(value===2){
+			}else if(value === 2){
 				//console.log('right side');
 				that.element.style.background = 'url(images/ash-right.png)';
-			}
-			if(value===3){
+			}else if(value === 3){
 				//console.log('up side');
 				that.element.style.background = 'url(images/ash-up.png)';
-			}
-			if(value===4){
+			}else if(value === 4){
 				//console.log('down side');
 				that.element.style.background = 'url(images/ash-down.png)';
 			}
+			var currentX = 30 * currentSpriteNox;
+			that.element.style.backgroundPositionX = currentX + 'px';
+			if(currentSpriteNox == 4) {
+				currentSpriteNox = 0;
+			} else {
+				currentSpriteNox = currentSpriteNox + 1;
+			}
 		};
+		//this.animation = setInterval(animate, 80);
 
 		var keyEvents = function() {
 			window.onkeydown = function(event){
-				if(event.which==37) { /*Left Button*/
-					that.velocityX = -30;
-					/*Left Animation*/
-					that.animate(1);
+				//Left Button
+				if(event.which==37) {
+					that.velocityX = -15;
+					//Left Animation
+					this.animation = setInterval(animate(1), 100);
 				}
-				if(event.which==39) { /*Right Button*/
-					that.velocityX = +30;
-					/*Right Animation*/
-					that.animate(2);
+				//Right Button
+				if(event.which==39) { 
+					that.velocityX = +15;
+					//Right Animation
+					this.animation = setInterval(animate(2), 100);
 				}
-				if(event.which==38) { /*Up Button*/
-					that.velocityY = -30;
-					/*Up Animation*/
-					that.animate(3);
+				//Up Button
+				if(event.which==38) { 
+					that.velocityY = -15;
+					//Up Animation
+					this.animation = setInterval(animate(3), 100);
 				}
-				if(event.which==40) { /*Down Button*/
-					that.velocityY = +30;
-					/*Down Animation*/
-					that.animate(4);
+				//Down Button
+				if(event.which==40) { 
+					that.velocityY = +15;
+					//Down Animation
+					this.animation = setInterval(animate(4), 100);
 				}
 			};
 			window.onkeyup = function(event) {
 				that.velocityX = 0;
 				that.velocityY = 0;
-				/**/
+				
 				if (event.which==37) {
 					//console.log("just pressed left");
+					clearInterval(that.animation);
 				}
 				if (event.which==39) {
 					//console.log("just pressed right");
+					clearInterval(that.animation);
 				}
 				if (event.which==38) {
 					//console.log("just pressed up");
+					clearInterval(that.animation);
 				}
 				if (event.which==40) {
 					//console.log("just pressed down");
+					clearInterval(that.animation);
 				}
 			};
 		};
@@ -268,11 +331,13 @@
 		var finder = new BreadthFirstFinder();
 		var path;
 		var counter = 0;
+		var number = 0;
+		var pokeballFound = false;
 
 		this.obstacleArray = [];
 		this.guy;
 		this.pokemon = [];
-		this.pokeball;
+		this.pokeball = [];
 
 		this.init = function() {
 			createMap(levelMap);
@@ -281,47 +346,56 @@
 			that.guy.init();
 			that.element.appendChild(that.guy.element);
 
-			that.pokemon = new Pokemon();
+			/*that.pokemon = new Pokemon();
 			that.pokemon.init();
-			that.element.appendChild(that.pokemon.element);
+			that.element.appendChild(that.pokemon.element);*/
+			
+			var zapdos = new Pokemon();
+			zapdos.init();
+			that.element.appendChild(zapdos.element);
+			that.pokemon.push(zapdos);
 
-			that.pokeball = new Pokeball();
-			that.pokeball.init(30, 30);
-			that.element.appendChild(that.pokeball.element);
+			/*var charizard = new Pokemon();
+			charizard.init();
+			that.element.appendChild(charizard.element);
+			that.pokemon.push(charizard);*/
+			
 
-			this.interval = setInterval(gameLoop, 65);
+			var pokeballZapdos = new Pokeball();
+			pokeballZapdos.init(that.pokemon[0].x, that.pokemon[0].y);
+			that.element.appendChild(pokeballZapdos.element);
+			that.pokeball.push(pokeballZapdos);
+
+			/*var pokeballCharizard = new Pokeball();
+			pokeballCharizard.init(that.pokemon[1].x, that.pokemon[1].y);
+			that.element.appendChild(pokeballCharizard.element);
+			that.pokeball.push(pokeballCharizard);*/
+
+			this.interval = setInterval(gameLoop, 100);
 		};
 
 		var gameLoop = function() {
 			//debugger;
 			var guyX = that.guy.x;
 			var guyY = that.guy.y;
-			var pokemonX = that.pokemon.x;
-			var pokemonY = that.pokemon.y;
-			var guyCoordX = guyX/30;
-			var guyCoordY = guyY/30;
-			var pokemonCoordX = Math.floor(pokemonX/30);
-			var pokemonCoordY = Math.floor(pokemonY/30);
+			var guyCoordX = Math.floor(guyX / 30);
+			var guyCoordY = Math.floor(guyY / 30);
 			
 			that.guy.updatePosition();
 
 			var gridBackup = grid.clone();
-			
-			//finds the path only on the first run
-			if(counter === 0) {
-				path = finder.findPath(pokemonCoordX, pokemonCoordY, guyCoordX, guyCoordY, gridBackup);
-				counter=1;
-			}
-			
-			//if pokemon has not reached new coordinate, keep updating its position
-			//else find new path
-			if(that.pokemon.checkPosition(pokemonX, pokemonY, path)) { // if not equal
-				that.pokemon.updatePosition(path);
-				console.log(path);
-			}else {
-				path = finder.findPath(pokemonCoordX, pokemonCoordY, guyCoordX, guyCoordY, gridBackup);
-			}
 
+			//if guy finds pokeball, go to safety
+			/*var goToSafety = function(endPosX, endPosY, velocity) {
+				if(number === 0) {
+					path = finder.findPath(pokemonCoordX, pokemonCoordY, endPosX, endPosY, gridBackup);
+					number = 1;
+				}
+				console.log('end position', endPosX, endPosY);
+				//that.pokemon.updatePosition(path,velocity);
+			};*/
+			
+		
 			//checking collision detection between guy and obstacles
 			for(var i = 0; i < that.obstacleArray.length; i++) {
 				if(collisionDetection(that.guy, that.obstacleArray[i])) {
@@ -332,39 +406,128 @@
 					that.guy.updatePosition();
 				}
 			}
+			//debugger;
+			//checking collision detection between guy and pokeball
+			for(var i = 0; i < that.pokeball.length; i++) {
+				if(collisionDetection(that.guy, that.pokeball[i])) {
+					console.log('Found Pokeball !');
+					that.pokeball[i].removePokeball();
+					pokeballFound = true;
+				}
+			}
 
-			//checking collision detection between guy and pokemon
-			if(collisionDetection(that.guy, that.pokemon)) {
-				console.log("dead");
-				clearInterval(that.interval);
+			for(var i = 0; i < that.pokemon.length; i++) {
+				var pokemonX = that.pokemon[i].x;
+				var pokemonY = that.pokemon[i].y;
+				var pokemonCoordX = Math.floor(pokemonX / 30);
+				var pokemonCoordY = Math.floor(pokemonY / 30);
+				
+				//finds the path only on the first run
+				if(counter === 0) {
+					path = finder.findPath(pokemonCoordX, pokemonCoordY, guyCoordX, guyCoordY, gridBackup);
+					counter = 1;
+				}
+
+				//if pokemon has not reached new coordinate, keep updating its position else find new path
+				var findNewPath = function(endPosX, endPosY, velocity) {
+					if(that.pokemon[i].checkPosition(pokemonX, pokemonY, path)) {
+						that.pokemon[i].updatePosition(path, velocity);
+						console.log('old path');
+					} else {
+						path = finder.findPath(pokemonCoordX, pokemonCoordY, endPosX, endPosY, gridBackup);
+						console.log('path found');
+					}
+				};
+
+				//check if ash found pokeball or not
+				if(pokeballFound) {
+					if(that.pokemon[i].a) {
+						console.log('bottom right', that.pokemon[i].a);
+						findNewPath(23, 13, 5);
+						//if pokemon reaches end position, remove it and game over.
+						if(pokemonCoordX === 23 && pokemonCoordY === 13) {
+							outcome(3);
+						}
+					} else if(that.pokemon[i].b) {
+						console.log('bottom left', that.pokemon[i].b);
+						findNewPath(1, 13, 5);
+						//if pokemon reaches end position, remove it and game over.
+						if(pokemonCoordX === 1 && pokemonCoordY === 13) {
+							outcome(3);
+						}
+					} else if(that.pokemon[i].c) {
+						console.log('top left', that.pokemon[i].c);
+						findNewPath(1, 1, 5);
+						//if pokemon reaches end position, remove it and game over.
+						if(pokemonCoordX === 1 && pokemonCoordY === 1) {
+							outcome(3);
+						}
+					} else if(that.pokemon[i].d) {
+						console.log('top right', that.pokemon[i].d);
+						findNewPath(23, 1, 5);
+						//if pokemon reaches end position, remove it and game over.
+						if(pokemonCoordX === 23 && pokemonCoordY === 1) {
+							outcome(3);
+						}
+					}
+				} else {
+					findNewPath(guyCoordX, guyCoordY, 15);
+					console.log('follow ash.');
+				}
+
+				//checking collision detection between guy and pokemon
+				if(collisionDetection(that.guy, that.pokemon[i])) {
+					if(pokeballFound) {
+						outcome(1);
+					} else {
+						outcome(2);
+					}
+				}
 			}
 		};
 
-		var collisionDetection = function(obj1, obj2) {
-			if ((obj1.x+30)>obj2.x && obj1.x<(obj2.x+30) && (obj1.y+30)>obj2.y && obj1.y<(obj2.y+30))  {
-				return true;
-			}else {
-				return false;
-			}
-		};
-
+		/**************************** Create Map ********************************/
 		var createMap = function(map) {
 			//y-axis values
 			for (var i = 0; i < map.length; i++) {
 				//x-axis values
 				for (var j = 0; j < map[i].length; j++) {
-					if(map[i][j] != 0) {;
+					if(map[i][j] !== 0) {
 						var obstacle = new Obstacle();
 						// implementing in an opposite way
-						obstacle.init(map[i][j],j,i);
+						obstacle.init(j,i);
 						that.obstacleArray.push(obstacle);
 						that.element.appendChild(obstacle.element);
 					}
 				}
 			}
 		};
-	};
 
+		/************************** Collision Detection ****************************/
+		var collisionDetection = function(obj1, obj2) {
+			if ((obj1.x + 30) > obj2.x && obj1.x < (obj2.x + 30) && (obj1.y + 30) > obj2.y && obj1.y < (obj2.y + 30))  {
+				return true;
+			}else {
+				return false;
+			}
+		};
+
+		/**************************** Outcome Function ***************************/
+		var outcome = function(value) {
+			if(value === 1) {
+				alert('You caught ZAPDOS!');
+				clearInterval(that.interval);
+			} else if(value === 2) {
+				alert('You got electrocuted!');
+				clearInterval(that.interval);
+			} else if(value === 3) {
+				alert('It ran away!');
+				that.pokemon[0].removePokemon();
+				clearInterval(that.interval);
+			}
+		};
+
+	};
 
 	/******************** Breadth First Algorithm Start **********************/
 
@@ -534,8 +697,6 @@
 	//Breadth-First-Search path finder.
 	function BreadthFirstFinder(opt) {
 	    opt = opt || {};
-	    this.allowDiagonal = opt.allowDiagonal;
-	    this.dontCrossCorners = opt.dontCrossCorners;
 	};
 
 
@@ -543,7 +704,7 @@
 	BreadthFirstFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
 		//debugger;
 	    var openList = [],
-	        diagonalMovement = this.diagonalMovement,
+	        //diagonalMovement = this.diagonalMovement,
 	        startNode = grid.getNodeAt(startX, startY),
 	        endNode = grid.getNodeAt(endX, endY),
 	        neighbors, neighbor, node, i, l;
@@ -594,7 +755,6 @@
 	};
 
 	/********************* Breadth First Algorithm End ***********************/
-
 
 	window.onkeydown = function(event) {
 		if (event.which == 32) {
