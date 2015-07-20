@@ -122,22 +122,15 @@
 			} else if(type === 2) {
 				that.x = 30;
 				that.y = 30;
-				that.element.style.background = 'red';
 			} else if(type === 3) {
 				that.x = 690;
 				that.y = 30;
-				that.element.style.background = 'red';
 			} else if(type === 4) {
 				that.x = 30;
 				that.y = 390;
-				that.element.style.background = 'red';
 			} else if (type === 5) {
 				that.x = 690;
 				that.y = 390;
-				that.element.style.background = 'red';
-			} else if (type === 6) {
-				that.x = 150;
-				that.y = 150;
 			}
 
 			that.element.style.left = that.x + 'px';
@@ -225,42 +218,58 @@
 			if(type === 1) {
 				if(that.x < 180 && that.y === 30) {
 					that.x += 5;
+					that.element.style.background = 'url(images/charizard-right.png)';
 				}else if(that.x === 180 && that.y < 150) {
 					that.y += 5;
+					that.element.style.background = 'url(images/charizard-down.png)';
 				}else if(that.x > 30 && that.y === 150) {
 					that.x -= 5;
+					that.element.style.background = 'url(images/charizard-left.png)';
 				}else {
 					that.y -= 5;
+					that.element.style.background = 'url(images/charizard-up.png)';
 				}
 			} else if (type === 2) {
-				if(that.x > 540 && that.y === 30) {
-					that.x -= 5;
-				}else if(that.x === 540 && that.y < 150) {
+				if(that.x === 690 && that.y < 150) {
 					that.y += 5;
-				}else if(that.x < 690 && that.y === 150) {
-					that.x += 5;
-				}else {
+					that.element.style.background = 'url(images/charizard-down.png)';
+				}else if(that.x > 540 && that.y === 150) {
+					that.x -= 5;
+					that.element.style.background = 'url(images/charizard-left.png)';
+				}else if(that.x === 540 && that.y > 30) {
 					that.y -= 5;
+					that.element.style.background = 'url(images/charizard-up.png)';
+				}else {
+					that.x += 5;
+					that.element.style.background = 'url(images/charizard-right.png)';
 				}
 			} else if (type === 3) {
-				if(that.x < 180 && that.y === 390) {
-					that.x += 5;
-				}else if(that.x === 180 && that.y > 270) {
+				if(that.x === 30 && that.y > 270) {
 					that.y -= 5;
-				}else if(that.x > 30 && that.y === 270) {
-					that.x -= 5;
-				}else {
+					that.element.style.background = 'url(images/charizard-up.png)';
+				}else if(that.x < 180 && that.y === 270) {
+					that.x += 5;
+					that.element.style.background = 'url(images/charizard-right.png)';
+				}else if(that.x === 180 && that.y < 390) {
 					that.y += 5;
+					that.element.style.background = 'url(images/charizard-down.png)';
+				}else {
+					that.x -= 5;
+					that.element.style.background = 'url(images/charizard-left.png)';
 				}
 			} else if (type === 4) {
 				if(that.x > 540 && that.y === 390) {
 					that.x -= 5;
+					that.element.style.background = 'url(images/charizard-left.png)';
 				}else if(that.x === 540 && that.y > 270) {
 					that.y -= 5;
+					that.element.style.background = 'url(images/charizard-up.png)';
 				}else if(that.x < 690 && that.y === 270) {
 					that.x += 5;
+					that.element.style.background = 'url(images/charizard-right.png)';
 				}else {
 					that.y += 5;
+					that.element.style.background = 'url(images/charizard-down.png)';
 				}
 			}
 			that.element.style.left = that.x + 'px';
