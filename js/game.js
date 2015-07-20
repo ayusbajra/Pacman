@@ -82,51 +82,64 @@
 		};
 	};
 
-
-
 	/***************************** Pokemon Class ***************************/
 
 	function Pokemon() {
 		var that = this;
 		this.element = document.createElement('div');
-		//this.element.style.background = 'url(images/zapdos.png)';
 		this.element.style.backgroundPosition = '0px 0px';
 
 		this.x = 0;
 		this.y = 0;
 		var currentSpriteNox = 0;
-		this.pathCounter = 0;
-		this.a = false;
-		this.b = false;
-		this.c = false;
-		this.d = false;
+		var pathCounter = 0;
+		this.topLeft = false;
+		this.topRight = false;
+		this.bottomLeft = false;
+		this.bottomRight = false;
 
-		this.initialPosition = function(){
-			var rand = Math.floor(Math.random()*4+1);
-			//console.log(rand);
-			if(rand === 1) {
-				that.x = 30;
-				that.y = 30;
-				that.a = true;
-			} else if(rand === 2) {
-				that.x = 690;
-				that.y = 30;
-				that.b = true;
-			} else if(rand === 3) {
-				that.x = 690;
-				that.y = 390;
-				that.c = true;
-			} else {
-				that.x = 30;
-				that.y = 390;
-				that.d = true;
-			}
-		};
-
-		that.initialPosition();
-
-		this.init = function() {
+		this.init = function(type) {
 			that.element.className = 'pokemon';
+			var rand = Math.floor(Math.random()*4+1);
+			if(type === 1) {
+				if(rand === 1) {
+					that.x = 30;
+					that.y = 30;
+					that.topLeft = true;
+				} else if(rand === 2) {
+					that.x = 690;
+					that.y = 30;
+					that.topRight = true;
+				} else if(rand === 3) {
+					that.x = 690;
+					that.y = 390;
+					that.bottomLeft = true;
+				} else {
+					that.x = 30;
+					that.y = 390;
+					that.bottomRight = true;
+				}
+			} else if(type === 2) {
+				that.x = 30;
+				that.y = 30;
+				that.element.style.background = 'red';
+			} else if(type === 3) {
+				that.x = 690;
+				that.y = 30;
+				that.element.style.background = 'red';
+			} else if(type === 4) {
+				that.x = 30;
+				that.y = 390;
+				that.element.style.background = 'red';
+			} else if (type === 5) {
+				that.x = 690;
+				that.y = 390;
+				that.element.style.background = 'red';
+			} else if (type === 6) {
+				that.x = 150;
+				that.y = 150;
+			}
+
 			that.element.style.left = that.x + 'px';
 			that.element.style.top = that.y + 'px';
 		};
@@ -134,6 +147,7 @@
 		this.checkPosition = function(currentX, currentY, path) {
 			var coordinate = [];
 			coordinate = path[1];
+
 			var newX = coordinate[0] * 30;
 			var newY = coordinate[1] * 30;
 
@@ -154,18 +168,18 @@
 			}
 		};
 
-		this.updatePosition = function(path,velocity) {
+		this.updatePosition = function(path, velocity) {
 			
 			var coordinate = [];
-			coordinate = path[that.pathCounter];
+			coordinate = path[pathCounter];
 			//debugger;
 			
-			if (that.pathCounter < path.length) {
+			if (pathCounter < path.length) {
 				var newPositionX = coordinate[0]*30;
 				var newPositionY = coordinate[1]*30;
 
-				if(that.pathCounter > 0) {
-					var oldPosition = path[that.pathCounter - 1];
+				if(pathCounter > 0) {
+					var oldPosition = path[pathCounter - 1];
 					var oldPositionX = oldPosition[0] * 30;
 					var oldPositionY = oldPosition[1] * 30;
 					
@@ -199,10 +213,56 @@
 						}
 					}
 				}else {
-					that.pathCounter = that.pathCounter + 1;
+					pathCounter = pathCounter + 1;
 				}
 			}
 
+			that.element.style.left = that.x + 'px';
+			that.element.style.top = that.y + 'px';
+		};
+
+		this.staticFollow = function(type) {
+			if(type === 1) {
+				if(that.x < 180 && that.y === 30) {
+					that.x += 5;
+				}else if(that.x === 180 && that.y < 150) {
+					that.y += 5;
+				}else if(that.x > 30 && that.y === 150) {
+					that.x -= 5;
+				}else {
+					that.y -= 5;
+				}
+			} else if (type === 2) {
+				if(that.x > 540 && that.y === 30) {
+					that.x -= 5;
+				}else if(that.x === 540 && that.y < 150) {
+					that.y += 5;
+				}else if(that.x < 690 && that.y === 150) {
+					that.x += 5;
+				}else {
+					that.y -= 5;
+				}
+			} else if (type === 3) {
+				if(that.x < 180 && that.y === 390) {
+					that.x += 5;
+				}else if(that.x === 180 && that.y > 270) {
+					that.y -= 5;
+				}else if(that.x > 30 && that.y === 270) {
+					that.x -= 5;
+				}else {
+					that.y += 5;
+				}
+			} else if (type === 4) {
+				if(that.x > 540 && that.y === 390) {
+					that.x -= 5;
+				}else if(that.x === 540 && that.y > 270) {
+					that.y -= 5;
+				}else if(that.x < 690 && that.y === 270) {
+					that.x += 5;
+				}else {
+					that.y += 5;
+				}
+			}
 			that.element.style.left = that.x + 'px';
 			that.element.style.top = that.y + 'px';
 		};
@@ -355,8 +415,18 @@
 		var finder = new BreadthFirstFinder();
 		var path;
 		var counter = 0;
-		var number = 0;
-		var badgeCount = 0;
+		//var findNewPath;
+
+		var guyX;
+		var guyY;
+		var guyCoordX;
+		var guyCoordY;
+		var zapdosX;
+		var zapdosY;
+		var zapdosCoordX;
+		var zapdosCoordY;
+
+		var gridBackup;
 		var pokeballFound = false;
 
 		this.obstacleArray = [];
@@ -372,19 +442,29 @@
 			that.guy.init();
 			that.element.appendChild(that.guy.element);
 
-			/*that.pokemon = new Pokemon();
-			that.pokemon.init();
-			that.element.appendChild(that.pokemon.element);*/
-			
-			var zapdos = new Pokemon();
-			zapdos.init();
-			that.element.appendChild(zapdos.element);
-			that.pokemon.push(zapdos);
+			this.zapdos = new Pokemon();
+			that.zapdos.init(1);
+			that.element.appendChild(that.zapdos.element);
 
-			/*var charizard = new Pokemon();
-			charizard.init();
+			var charizard = new Pokemon();
+			charizard.init(2);
 			that.element.appendChild(charizard.element);
-			that.pokemon.push(charizard);*/
+			that.pokemon.push(charizard);
+
+			charizard = new Pokemon();
+			charizard.init(3);
+			that.element.appendChild(charizard.element);
+			that.pokemon.push(charizard);
+
+			charizard = new Pokemon();
+			charizard.init(4);
+			that.element.appendChild(charizard.element);
+			that.pokemon.push(charizard);
+
+			charizard = new Pokemon();
+			charizard.init(5);
+			that.element.appendChild(charizard.element);
+			that.pokemon.push(charizard);
 
 			var badge = new Badge();
 			badge.init(6, 1);
@@ -427,19 +507,62 @@
 			that.badges.push(badge);
 
 			this.interval = setInterval(gameLoop, 100);
+
 		};
 
 		var gameLoop = function() {
 			//debugger;
-			var guyX = that.guy.x;
-			var guyY = that.guy.y;
-			var guyCoordX = Math.floor(guyX / 30);
-			var guyCoordY = Math.floor(guyY / 30);
-			
+			guyX = that.guy.x;
+			guyY = that.guy.y;
+			guyCoordX = Math.floor(guyX / 30);
+			guyCoordY = Math.floor(guyY / 30);
+
+			zapdosX = that.zapdos.x;
+			zapdosY = that.zapdos.y;
+			zapdosCoordX = Math.floor(zapdosX / 30);
+			zapdosCoordY = Math.floor(zapdosY / 30);
+
 			that.guy.updatePosition();
 
-			var gridBackup = grid.clone();
-		
+			gridBackup = grid.clone();
+			
+			//finds the path only on the first run
+			if(counter === 0) {
+				path = finder.findPath(zapdosCoordX, zapdosCoordY, guyCoordX, guyCoordY, gridBackup);
+				counter = 1;
+			}
+				
+			if(that.badges.length === 0) {
+				if(that.zapdos.topLeft) {
+					console.log('bottom right');
+					findNewPath(23, 13, 10);
+					if(zapdosCoordX === 23 && zapdosCoordY === 13) {
+						outcome(3);
+					}
+				} else if(that.zapdos.topRight) {
+					console.log('bottom left');
+					findNewPath(1, 13, 10);
+					if(zapdosCoordX === 1 && zapdosCoordY === 13) {
+						outcome(3);
+					}
+				} else if(that.zapdos.bottomLeft) {
+					console.log('top left');
+					findNewPath(1, 1, 10);
+					if(zapdosCoordX === 1 && zapdosCoordY === 1) {
+						outcome(3);
+					}
+				} else if(that.zapdos.bottomRight) {
+					console.log('top right');
+					findNewPath(23, 1, 10);
+					if(zapdosCoordX === 23 && zapdosCoordY === 1) {
+						outcome(3);
+					}
+				}
+			} else {
+				findNewPath(guyCoordX, guyCoordY, 10);
+				//console.log('follow ash.');
+			}
+
 			//checking collision detection between guy and obstacles
 			for(var i = 0; i < that.obstacleArray.length; i++) {
 				if(collisionDetection(that.guy, that.obstacleArray[i])) {
@@ -468,80 +591,55 @@
 					console.log('Found a badge !');
 					that.badges[i].removeBadge();
 					that.badges[i] = null;
-					badgeCount = badgeCount + 1;
+					console.log(that.badges.length);
+					if(that.badges.length === 1) {
+						showPokeball();
+					}
 				}
 				that.badges = removeEmptyValues(that.badges);
 			}
 
-			for(var i = 0; i < that.pokemon.length; i++) {
-				var pokemonX = that.pokemon[i].x;
-				var pokemonY = that.pokemon[i].y;
-				var pokemonCoordX = Math.floor(pokemonX / 30);
-				var pokemonCoordY = Math.floor(pokemonY / 30);
-				
-				//finds the path only on the first run
-				if(counter === 0) {
-					path = finder.findPath(pokemonCoordX, pokemonCoordY, guyCoordX, guyCoordY, gridBackup);
-					counter = 1;
-				}
-
-				//if pokemon has not reached new coordinate, keep updating its position else find new path
-				var findNewPath = function(endPosX, endPosY, velocity) {
-					if(that.pokemon[i].checkPosition(pokemonX, pokemonY, path)) {
-						that.pokemon[i].updatePosition(path, velocity);
-					} else {
-						path = finder.findPath(pokemonCoordX, pokemonCoordY, endPosX, endPosY, gridBackup);
-					}
-				};
-
-				//check if ash collected all the badges or not
-				if(badgeCount === 8) {
-					showPokeball();
-					
-					if(that.pokemon[i].a) {
-						console.log('bottom right', that.pokemon[i].a);
-						findNewPath(23, 13, 10);
-						if(pokemonCoordX === 23 && pokemonCoordY === 13) {
-							outcome(3);
-						}
-					} else if(that.pokemon[i].b) {
-						console.log('bottom left', that.pokemon[i].b);
-						findNewPath(1, 13, 10);
-						if(pokemonCoordX === 1 && pokemonCoordY === 13) {
-							outcome(3);
-						}
-					} else if(that.pokemon[i].c) {
-						console.log('top left', that.pokemon[i].c);
-						findNewPath(1, 1, 10);
-						if(pokemonCoordX === 1 && pokemonCoordY === 1) {
-							outcome(3);
-						}
-					} else if(that.pokemon[i].d) {
-						console.log('top right', that.pokemon[i].d);
-						findNewPath(23, 1, 10);
-						if(pokemonCoordX === 23 && pokemonCoordY === 1) {
-							outcome(3);
-						}
-					}
-				} else {
-					findNewPath(guyCoordX, guyCoordY, 10);
-					//console.log('follow ash.');
-				}
-
-				//checking collision detection between guy and pokemon
+			//checking collision detection between guy and round moving pokemon
+			for(var i = 0; i < that.pokemon.length; i++) {	 
+					that.pokemon[i].staticFollow(i+1);
 				if(collisionDetection(that.guy, that.pokemon[i])) {
-					if(pokeballFound) {
-						outcome(1);
-					} else {
-						outcome(2);
-					}
+					clearInterval(that.interval);
+					console.log('Game Over!');
 				}
+			}
+
+			//checking collision detection between guy and zapdos pokemon
+			if(collisionDetection(that.guy, that.zapdos)) {
+				if(pokeballFound) {
+					outcome(1);
+				} else {
+					outcome(2);
+				}
+			}
+		};
+
+		//if pokemon has not reached new coordinate, keep updating its position else find new path
+		var findNewPath = function(endPosX, endPosY, velocity) {
+			if(path.length > 1) {
+				if(that.zapdos.checkPosition(zapdosX, zapdosY, path)) {
+				//console.log(zapdosX, zapdosY);
+					that.zapdos.updatePosition(path, velocity);
+				} else {
+					gridBackup = grid.clone();
+					path = finder.findPath(zapdosCoordX, zapdosCoordY, endPosX, endPosY, gridBackup);
+				}
+			}
+		};
+
+		var checkBadge = function() {
+			if(that.badges.length === 0) {
+				showPokeball();
 			}
 		};
 
 		var showPokeball = function() {	
 			var pokeball = new Pokeball();
-			pokeball.init(390, 210);
+			pokeball.init(360, 210);
 			that.element.appendChild(pokeball.element);
 			that.pokeballArray.push(pokeball);
 		};
@@ -591,7 +689,7 @@
 				alert('You got electrocuted!');
 				clearInterval(that.interval);
 			} else if(value === 3) {
-				that.pokemon[0].removePokemon();
+				that.zapdos.removePokemon();
 				alert('It flew away!');
 				clearInterval(that.interval);
 			}

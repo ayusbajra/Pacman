@@ -51,6 +51,7 @@
 	position: relative;
 	background-image: url('../images/main.png');
 	display: none;
+	overflow: hidden;
 }
 
 .guy {
