@@ -11,38 +11,28 @@
 	margin: 0px;
 	padding: 0px;
 }
-
 #main-screen {
 	margin: 50px auto;
 	width: 750px;
 	height: 450px;
 	position: relative;
-	background-color: black;
+	background: url("../images/background.png") no-repeat;
 }
-
-.logo {
-	margin:0 auto;
-	width: 500px;
-	height: 200px;
-	background: url("../images/logo1.png") no-repeat;
-	background-position: 0px 20px;
-}
-
 .play {
-	width: 750px;
-	height: 100px;
-	color: #345da9;
+	width: 150px;
+	height: 90px;
+	top: 180px;
+	left: 300px;
 	position: absolute;
-	top: 350px;
-	border-radius: 10px;
+	opacity: 0.7;
+	background: url("../images/play.png") no-repeat;
+	-webkit-transition: opacity 1s; /* For Safari 3.1 to 6.0 */
+    transition: opacity 1s;
+}
+.play:hover {
+	opacity: 1;
 }
 
-.play h1 {
-	text-align: center;
-	line-height: 30px;
-	font-family: arial;
-	font-size: 25px;
-}
 
 #container {
 	margin: 50px auto;
@@ -51,30 +41,55 @@
 	position: relative;
 	background-image: url('../images/main.png');
 	display: none;
-	overflow: hidden;
 }
 
-.guy {
-	width: 30px;
-	height: 30px;
-	position: absolute;
-	background-color: yellow;
-}
-
-.pokemon {
+.guy, .pokemon, .pokeball, .badge {
 	width: 30px;
 	height: 30px;
 	position: absolute;
 }
 
-.pokeball {
-	width: 30px;
-	height: 30px;
-	position: absolute;
+#gameover-screen {
+	margin: 50px auto;
+	width: 750px;
+	height: 450px;
+	position: relative;
+	background: url("../images/gameover.png") no-repeat;
+	display: none;
 }
-
-.badge {
-	width: 30px;
-	height: 30px;
+.result {
+	width: 270px;
+	height: 240px;
+	top: 60px;
+	left: 60px;
 	position: absolute;
+	background-color: purple;
+}
+.play-again {
+	width: 270px;
+	height: 60px;
+	top: 180px;
+	right: 60px;
+	position: absolute;
+	opacity: 0.7;
+	background: url("../images/play-again.png") no-repeat;
+	-webkit-transition: opacity 1s; /* For Safari 3.1 to 6.0 */
+    transition: opacity 1s;
+}
+.play-again:hover {
+	opacity: 1;
+}
+.main-menu {
+	width: 270px;
+	height: 60px;
+	top: 300px;
+	right: 60px;
+	position: absolute;
+	opacity: 0.7;
+	background: url("../images/go-to-mainmenu.png") no-repeat;
+	-webkit-transition: opacity 1s; /* For Safari 3.1 to 6.0 */
+    transition: opacity 1s;
+}
+.main-menu:hover {
+	opacity: 1;
 }

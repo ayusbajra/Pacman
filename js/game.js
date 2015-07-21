@@ -399,8 +399,15 @@
 
 	function Game() {
 		var that = this;
+		this.element = document.getElementById("container");
 
-		this.element = document.getElementById('container');
+		this.mainScreen = document.getElementById("main-screen");
+		this.play = document.getElementById("main-screen").children[0];
+
+		this.gameoverScreen = document.getElementById("gameover-screen");
+		this.result = document.getElementById("gameover-screen").children[0];
+		this.playAgain = document.getElementById("gameover-screen").children[1];
+		this.mainMenu = document.getElementById("gameover-screen").children[2];
 
 		var levelMap = [
 			[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -546,25 +553,25 @@
 					console.log('bottom right');
 					findNewPath(23, 13, 10);
 					if(zapdosCoordX === 23 && zapdosCoordY === 13) {
-						outcome(3);
+						gameover(3);
 					}
 				} else if(that.zapdos.topRight) {
 					console.log('bottom left');
 					findNewPath(1, 13, 10);
 					if(zapdosCoordX === 1 && zapdosCoordY === 13) {
-						outcome(3);
+						gameover(3);
 					}
 				} else if(that.zapdos.bottomLeft) {
 					console.log('top left');
 					findNewPath(1, 1, 10);
 					if(zapdosCoordX === 1 && zapdosCoordY === 1) {
-						outcome(3);
+						gameover(3);
 					}
 				} else if(that.zapdos.bottomRight) {
 					console.log('top right');
 					findNewPath(23, 1, 10);
 					if(zapdosCoordX === 23 && zapdosCoordY === 1) {
-						outcome(3);
+						gameover(3);
 					}
 				}
 			} else {
@@ -612,17 +619,16 @@
 			for(var i = 0; i < that.pokemon.length; i++) {	 
 					that.pokemon[i].staticFollow(i+1);
 				if(collisionDetection(that.guy, that.pokemon[i])) {
-					clearInterval(that.interval);
-					console.log('Game Over!');
+					gameover(4);
 				}
 			}
 
 			//checking collision detection between guy and zapdos pokemon
 			if(collisionDetection(that.guy, that.zapdos)) {
 				if(pokeballFound) {
-					outcome(1);
+					gameover(1);
 				} else {
-					outcome(2);
+					gameover(2);
 				}
 			}
 		};
@@ -689,21 +695,48 @@
 			return array;
 		};
 
-		/**************************** Outcome Function ***************************/
-		var outcome = function(value) {
-			if(value === 1) {
-				alert('You caught ZAPDOS!');
-				clearInterval(that.interval);
-			} else if(value === 2) {
-				alert('You got electrocuted!');
-				clearInterval(that.interval);
-			} else if(value === 3) {
-				that.zapdos.removePokemon();
-				alert('It flew away!');
-				clearInterval(that.interval);
+		/***********Main Menu ***************/
+		this.mainMenu = function() {
+			that.play.onclick = function() {
+				that.init();
+				that.element.style.display = "block";
+				that.mainScreen.style.display = "none";
 			}
 		};
 
+		/**************************** Gameover Function ***************************/
+		var gameover = function(value) {
+			clearInterval(that.interval);
+			that.element.style.display = "none";
+			that.gameoverScreen.style.display = "block";
+			
+			if(value === 1) {
+				console.log('You caught ZAPDOS!');
+				that.result.style.background = 'url(images/you-win.png)';
+			} else if(value === 2) {
+				console.log('You got electrocuted!');
+				that.result.style.background = 'url(images/you-lose1.png)';
+			} else if(value === 3) {
+				that.zapdos.removePokemon();
+				console.log('It flew away!');
+				that.result.style.background = 'url(images/you-lose2.png)';
+			} else if(value === 4) {
+				console.log('You got burned!');
+				that.result.style.background = 'url(images/you-lose3.png)';
+			}
+
+			//play-again button
+			that.playAgain.onclick = function() {
+				// that.init();
+				// that.gameoverScreen.style.display = "none";
+				// that.element.style.display = "block";
+			}
+			//main menu button
+			that.mainMenu.onclick = function() {
+				// that.gameoverScreen.style.display = "none";
+				// that.mainScreen.style.display = "block";
+			}
+		};
 	};
 
 	/******************** Breadth First Algorithm Start **********************/
@@ -933,16 +966,7 @@
 
 	/********************* Breadth First Algorithm End ***********************/
 
-	window.onkeydown = function(event) {
-		if (event.which == 32) {
-			var container = document.getElementById("container");
-			var mainScreen = document.getElementById("main-screen");
-			container.style.display = "block";
-			mainScreen.style.display = "none";
-
-			var game = new Game();
-			game.init();
-		}
-	};
+	var game = new Game();
+	game.mainMenu();
 
 })();
