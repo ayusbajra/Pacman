@@ -407,7 +407,6 @@
 		this.gameoverScreen = document.getElementById("gameover-screen");
 		this.result = document.getElementById("gameover-screen").children[0];
 		this.playAgain = document.getElementById("gameover-screen").children[1];
-		this.mainMenu = document.getElementById("gameover-screen").children[2];
 
 		var levelMap = [
 			[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -727,14 +726,8 @@
 
 			//play-again button
 			that.playAgain.onclick = function() {
-				// that.init();
-				// that.gameoverScreen.style.display = "none";
-				// that.element.style.display = "block";
-			}
-			//main menu button
-			that.mainMenu.onclick = function() {
-				// that.gameoverScreen.style.display = "none";
-				// that.mainScreen.style.display = "block";
+				// reload the page
+				location.reload();
 			}
 		};
 	};
