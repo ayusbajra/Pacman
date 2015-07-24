@@ -550,25 +550,25 @@
 			if(that.badges.length === 0) {
 				if(that.zapdos.topLeft) {
 					console.log('bottom right');
-					findNewPath(23, 13, 10);
+					findNewPath(23, 13, 5);
 					if(zapdosCoordX === 23 && zapdosCoordY === 13) {
 						gameover(3);
 					}
 				} else if(that.zapdos.topRight) {
 					console.log('bottom left');
-					findNewPath(1, 13, 10);
+					findNewPath(1, 13, 5);
 					if(zapdosCoordX === 1 && zapdosCoordY === 13) {
 						gameover(3);
 					}
 				} else if(that.zapdos.bottomLeft) {
 					console.log('top left');
-					findNewPath(1, 1, 10);
+					findNewPath(1, 1, 5);
 					if(zapdosCoordX === 1 && zapdosCoordY === 1) {
 						gameover(3);
 					}
 				} else if(that.zapdos.bottomRight) {
 					console.log('top right');
-					findNewPath(23, 1, 10);
+					findNewPath(23, 1, 5);
 					if(zapdosCoordX === 23 && zapdosCoordY === 1) {
 						gameover(3);
 					}
